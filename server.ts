@@ -5,6 +5,8 @@ import connection from './src/config/db';
 import { Server } from 'socket.io';
 
 
+
+
 //data receive garda on
 //data send garda emit
 //request socket
@@ -13,6 +15,8 @@ import { Server } from 'socket.io';
 //io le sbailai
 //socket le conected lai matra
 
+
+let io:Server | undefined;
 function startServer() {
     connection();
     const port = envConfig.port||4000
@@ -20,17 +24,15 @@ function startServer() {
    const server= app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     })
-    const io = new Server(server)
-    io.on("connection",(socket)=>{
-        socket.on("haha",(data)=>{
-            console.log(data) 
-            io.emit("response",{
-            message:"sushil"
-        })
-    })
-        console.log("socket connected")
-    })
-
+    io = new Server(server)
 }
 
+
+function getSocketIo(){
+    if(!io){
+        throw new Error('Socket.io not initialized');
+    }
+    return io;
+}
 startServer();
+export {getSocketIo};
