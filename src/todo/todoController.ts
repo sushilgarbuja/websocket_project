@@ -10,8 +10,9 @@ class Todo {
         this.io.on("connection", (socket: Socket) => {
             console.log("User connected");
             socket.on("addTodo", (data: any) => this.handleAddTodo(socket, data));
-            // You might want to add an event listener for deleteTodo here
+            
             socket.on("deleteTodo", (data: any) => this.handleDeleteTodo(socket, data));
+            socket.on("updateTodoStatus",(data)=>this.handleUpdateTodoStatus(socket,data));
         });
     }
 
@@ -24,8 +25,8 @@ class Todo {
                 task,
                 deadline,
                 status,
-            });
-            const todos = await todoModel.find();
+            })
+            const todos = await todoModel.find({status :Status.Pending})
             socket.emit("todos_updated", {
                 status: "success",
                 data: todos
@@ -50,7 +51,7 @@ class Todo {
             })
             return;
         }
-        const todos = await todoModel.find()
+        const todos = await todoModel.find({status:Status.Pending})
         socket.emit("todos_updated", {
             status: "success",
             data: todos
@@ -63,6 +64,29 @@ class Todo {
             });
         }
     }
+    private async handleUpdateTodoStatus(socket:Socket,data:{id:string,status:Status}){
+        try{
+        const{id,status}=data;
+        const todo=await todoModel.findByIdAndUpdate(id,{status});
+        if(!todo){
+            socket.emit("todo_response", {
+                status: "error",
+                error: "Todo not found"
+            })
+            return;
+        }
+        const todos = await todoModel.find({status:Status.Pending})
+        socket.emit("todos_updated", {
+            status: "success",
+            data: todos
+        })
+        } catch (error) {
+            socket.emit("todo_response", {
+                status: "error",
+                error
+            });
+    }
+}
 }
 
 export default new Todo();
