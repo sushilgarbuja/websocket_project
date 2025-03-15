@@ -13,6 +13,7 @@ class Todo {
             
             socket.on("deleteTodo", (data: any) => this.handleDeleteTodo(socket, data));
             socket.on("updateTodoStatus",(data)=>this.handleUpdateTodoStatus(socket,data));
+            socket.on("fetchTodos",(data)=>this.getPendingTodos(socket))
         });
     }
 
@@ -86,7 +87,21 @@ class Todo {
                 error
             });
     }
-}
+    }
+    private async getPendingTodos(socket:Socket){
+    try{
+        const todos = await todoModel.find({status:Status.Pending})
+    socket.emit("todos_updated", {
+        status: "success",
+        data: todos
+    })
+    } catch (error) {
+        socket.emit("todo_response", {
+            status: "error",
+            error
+        });
+    }
+    }
 }
 
 export default new Todo();
