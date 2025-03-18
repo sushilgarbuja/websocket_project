@@ -22,12 +22,13 @@ class Todo {
         try {
             const { task, deadline, status } = data;
             console.log(data);
-            await todoModel.create({
+            const newTodo = await todoModel.create({
                 task,
                 deadline,
                 status,
             })
-            const todos = await todoModel.find({status :Status.Pending})
+            console.log(newTodo);
+            const todos = await todoModel.find()
             socket.emit("todos_updated", {
                 status: "success",
                 data: todos
@@ -38,6 +39,7 @@ class Todo {
                 error
             });
         }
+        
     }
 
     private async handleDeleteTodo(socket: Socket, data: any) {
@@ -90,7 +92,7 @@ class Todo {
     }
     private async getPendingTodos(socket:Socket){
     try{
-        const todos = await todoModel.find({status:Status.Pending})
+        const todos = await todoModel.find()
     socket.emit("todos_updated", {
         status: "success",
         data: todos
