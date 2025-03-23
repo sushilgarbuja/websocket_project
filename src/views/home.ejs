@@ -22,7 +22,7 @@
             </button>
         </form>
 
-        <div class="flex justify-between items-center mb-4">
+        <!-- <div class="flex justify-between items-center mb-4">
             <select id="filter" class="p-2 rounded border text-gray-700" onchange="filterTodos()">
                 <option value="all">All</option>
                 <option value="pending">Pending</option>
@@ -31,7 +31,7 @@
             <button class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600" onclick="clearAllTasks()">
                 🗑️ Clear All
             </button>
-        </div>
+        </div> -->
 
         <ul id="todoList" class="divide-y divide-gray-300"></ul>
     </div>
@@ -56,17 +56,13 @@
                 const listItem = `
                     <li class="py-3 px-3 flex justify-between items-center bg-white rounded shadow-md my-2 transition-all hover:scale-105">
                         <div class="flex items-center">
-                            <input id="todo_${todo._id}" type="checkbox" class="h-5 w-5 text-green-600"
-                                onchange="toggleStatus('${todo._id}', this.checked)" 
-                                ${todo.status === 'completed' ? 'checked' : ''}>
+                            
                             <span class="ml-3 text-lg font-medium text-gray-900 ${todo.status === 'completed' ? 'line-through text-gray-500' : ''}">
                                 ${todo.task}
                             </span>
                         </div>
                         <div class="flex space-x-2">
-                            <button class="text-blue-500 hover:text-blue-700" onclick="editTodo('${todo._id}', '${todo.task}')">
-                                ✏️
-                            </button>
+                            
                             <button class="text-red-500 hover:text-red-700" onclick="deleteTodo('${todo._id}')">
                                 ❌
                             </button>
